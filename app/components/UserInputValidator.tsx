@@ -1,11 +1,5 @@
-interface Props {
-  label: string;
-  validateUserInput: boolean;
-  val: string;
-}
-
 const UserInputValidator = (label: string, validateUserInput: boolean, val: string): boolean => {
-  if (!validateUserInput) false;
+  if (!validateUserInput) return true;
 
   if (label[0] == "£") {
     return validateUserInput && Number(val) % Number(label.slice(1)) == 0;
