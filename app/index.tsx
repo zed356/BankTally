@@ -1,45 +1,10 @@
-import { StatusBar } from "expo-status-bar";
 import { Fragment } from "react";
 import { Text, View, TextInput, ViewStyle } from "react-native";
 
+import CustomUserInput from "./components/CustomUserInput";
+
 export default function Index() {
   const valuet = () => {};
-
-  interface InputProps {
-    value: string;
-  }
-
-  interface DisplayBoxProps {
-    text: string;
-    allowInput?: boolean;
-    style?: ViewStyle;
-  }
-
-  const CustomUserInput: React.FC<InputProps> = ({ value }) => {
-    return (
-      <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>{value}</Text>
-        <TextInput
-          style={{ height: 30, borderColor: "gray", borderWidth: 1, width: 40 }}
-          keyboardType="numeric"
-        />
-      </View>
-    );
-  };
-
-  const DisplayBox: React.FC<DisplayBoxProps> = ({ text, allowInput = true, style }) => {
-    return (
-      <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
-        <Text>{text}</Text>
-        <TextInput
-          style={{ borderColor: "gray", borderWidth: 1, width: 40, height: 25, ...style }}
-          keyboardType="numeric"
-          readOnly={!allowInput}
-          pointerEvents={allowInput ? "auto" : "none"}
-        ></TextInput>
-      </View>
-    );
-  };
 
   return (
     <Fragment>
@@ -66,29 +31,29 @@ export default function Index() {
           style={{
             flex: 1,
             marginTop: 10,
-            width: 100,
+            width: 110,
             paddingLeft: 0,
           }}
         >
-          <CustomUserInput value="£20" />
-          <CustomUserInput value="£10" />
-          <CustomUserInput value="£5" />
-          <CustomUserInput value="£2" />
-          <CustomUserInput value="£1" />
-          <CustomUserInput value="50p" />
-          <CustomUserInput value="20p" />
-          <CustomUserInput value="10p" />
-          <CustomUserInput value="5p" />
-          <CustomUserInput value="2p" />
-          <CustomUserInput value="1p" />
+          <CustomUserInput label="£20" />
+          <CustomUserInput label="£10" />
+          <CustomUserInput label="£5" />
+          <CustomUserInput label="£2" />
+          <CustomUserInput label="£1" />
+          <CustomUserInput label="50p" />
+          <CustomUserInput label="20p" />
+          <CustomUserInput label="10p" />
+          <CustomUserInput label="5p" />
+          <CustomUserInput label="2p" />
+          <CustomUserInput label="1p" />
 
-          <DisplayBox
-            text="Total"
+          <CustomUserInput
+            label="Total"
             allowInput={false}
             style={{ borderWidth: 1, borderColor: "black" }}
           />
-          <DisplayBox text="Expected" />
-          <DisplayBox text="Difference" allowInput={false} />
+          <CustomUserInput label="Expected" />
+          <CustomUserInput label="Difference" allowInput={false} style={{ borderColor: "blue" }} />
         </View>
       </View>
     </Fragment>
