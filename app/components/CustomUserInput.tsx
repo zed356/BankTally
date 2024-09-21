@@ -41,11 +41,32 @@ const CustomUserInput: React.FC<InputProps> = ({
   };
 
   const validateInput = (): boolean => {
+    if (!validateUserInput) true;
+
     if (label[0] == "£") {
       return validateUserInput && Number(val) % Number(label.slice(1)) == 0;
-    } else {
-      return validateUserInput && (Number(val) * 100) % Number(label.slice(0, -1)) == 0;
+    } else if (label[label.length - 1] == "p") {
+      const decimalIndex = val.indexOf(".");
+      let numAfterDecimal = val.slice(decimalIndex + 1);
+      const labelToNumber = +label.slice(0, -1);
+
+      if (decimalIndex == -1 || val.slice(decimalIndex).length == 1) {
+        return true;
+      }
+
+      if (+numAfterDecimal == 0) {
+        return true;
+      }
+
+      if (numAfterDecimal.length == 1) {
+        numAfterDecimal += 0;
+        return +numAfterDecimal % labelToNumber == 0;
+      } else if (labelToNumber < 10) {
+        return +numAfterDecimal[1] % labelToNumber == 0;
+      }
     }
+
+    return false;
   };
 
   return (
@@ -64,8 +85,9 @@ const CustomUserInput: React.FC<InputProps> = ({
           borderColor: Number(val) != 0 && !validateInput() ? "red" : "gray",
           borderWidth: 1,
           width: 60,
-          paddingLeft: 2,
+          paddingLeft: 3,
           pointerEvents: allowInput ? "auto" : "none",
+          color: "black",
           ...style,
         }}
         placeholderTextColor={focused ? "transparent" : "black"}
@@ -79,7 +101,7 @@ const CustomUserInput: React.FC<InputProps> = ({
         placeholder="0"
         onChangeText={handleVal}
         value={value}
-        maxLength={calcMaxInputLength()}
+        maxLength={validateUserInput ? calcMaxInputLength() : maxLength}
       />
     </View>
   );

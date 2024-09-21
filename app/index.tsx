@@ -26,18 +26,18 @@ export default function Index() {
 
   const displayTotalValue = Object.values(values)
     .reduce((acc, cur) => acc + cur)
-    .toString();
+    .toFixed(2);
 
-  const displayDifference = (Number(displayTotalValue) - expectedValue).toString();
+  const displayDifference = (Number(displayTotalValue) - expectedValue).toFixed(2);
 
   const handleDifferenceBorder = () => {
     const temp = Number(displayDifference);
     if (temp > 0) {
-      return "blue";
+      return "green";
     } else if (temp < 0) {
       return "red";
     } else {
-      return "green";
+      return "gray";
     }
   };
 
@@ -66,7 +66,7 @@ export default function Index() {
           style={{
             flex: 1,
             marginTop: 10,
-            width: 125,
+            width: 130,
             paddingLeft: 0,
           }}
         >
@@ -84,14 +84,15 @@ export default function Index() {
           <CustomUserInput
             label="Total"
             allowInput={false}
-            style={{ borderWidth: 1, borderColor: "black" }}
+            style={{ borderWidth: 2, borderColor: "black" }}
             value={displayTotalValue}
             validateUserInput={false}
           />
           <CustomUserInput
             label="Expected"
             onBlur={handleExpectedValue}
-            validateUserInput={false}
+            validateUserInput={true}
+            style={{ borderWidth: 2 }}
           />
           <CustomUserInput
             label="Difference"
