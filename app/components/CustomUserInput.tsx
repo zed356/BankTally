@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
-import { View, Text, TextInput, ViewStyle, TextInputAndroidProps } from "react-native";
+import { useState } from "react";
+import { View, Text, TextInput, ViewStyle } from "react-native";
+
 import UserInputValidator from "./UserInputValidator";
 
 interface InputProps {
