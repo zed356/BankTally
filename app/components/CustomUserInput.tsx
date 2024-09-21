@@ -32,8 +32,21 @@ const CustomUserInput: React.FC<InputProps> = ({
     setFocused(!focused);
   };
 
-  const validateInput = (): boolean =>
-    validateUserInput && Number(val) % Number(label.slice(1)) == 0;
+  const calcMaxInputLength = (): number => {
+    const targetIndex = val.indexOf(".");
+    const temp = val.slice(0, targetIndex);
+
+    // +3 because: 1 for the '.' char and 2 for 2 digits after the decimal point
+    return Number(temp.length + 3);
+  };
+
+  const validateInput = (): boolean => {
+    if (label[0] == "£") {
+      return validateUserInput && Number(val) % Number(label.slice(1)) == 0;
+    } else {
+      return validateUserInput && (Number(val) * 100) % Number(label.slice(0, -1)) == 0;
+    }
+  };
 
   return (
     <View
@@ -66,7 +79,7 @@ const CustomUserInput: React.FC<InputProps> = ({
         placeholder="0"
         onChangeText={handleVal}
         value={value}
-        maxLength={maxLength}
+        maxLength={calcMaxInputLength()}
       />
     </View>
   );
