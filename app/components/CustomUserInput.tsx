@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { View, Text, TextInput, ViewStyle, TextInputAndroidProps } from "react-native";
+import UserInputValidator from "./UserInputValidator";
 
 interface InputProps {
   label: string;
@@ -40,35 +41,6 @@ const CustomUserInput: React.FC<InputProps> = ({
     return Number(temp.length + 3);
   };
 
-  const validateInput = (): boolean => {
-    if (!validateUserInput) true;
-
-    if (label[0] == "£") {
-      return validateUserInput && Number(val) % Number(label.slice(1)) == 0;
-    } else if (label[label.length - 1] == "p") {
-      const decimalIndex = val.indexOf(".");
-      let numAfterDecimal = val.slice(decimalIndex + 1);
-      const labelToNumber = +label.slice(0, -1);
-
-      if (decimalIndex == -1 || val.slice(decimalIndex).length == 1) {
-        return true;
-      }
-
-      if (+numAfterDecimal == 0) {
-        return true;
-      }
-
-      if (numAfterDecimal.length == 1) {
-        numAfterDecimal += 0;
-        return +numAfterDecimal % labelToNumber == 0;
-      } else if (labelToNumber < 10) {
-        return +numAfterDecimal[1] % labelToNumber == 0;
-      }
-    }
-
-    return false;
-  };
-
   return (
     <View
       style={{
@@ -82,7 +54,8 @@ const CustomUserInput: React.FC<InputProps> = ({
       <TextInput
         style={{
           height: 30,
-          borderColor: Number(val) != 0 && !validateInput() ? "red" : "gray",
+          borderColor:
+            Number(val) != 0 && !UserInputValidator(label, validateUserInput, val) ? "red" : "gray",
           borderWidth: 1,
           width: 60,
           paddingLeft: 3,

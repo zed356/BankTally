@@ -91,7 +91,7 @@ export default function Index() {
           <CustomUserInput
             label="Expected"
             onBlur={handleExpectedValue}
-            validateUserInput={true}
+            validateUserInput={false}
             style={{ borderWidth: 2 }}
           />
           <CustomUserInput
