@@ -1,12 +1,11 @@
 import { Fragment, useState } from "react";
-import { Keyboard, Text, TouchableWithoutFeedback, View } from "react-native";
+import { Keyboard, Pressable, Text, TouchableWithoutFeedback, View } from "react-native";
 
 import CustomUserInput from "./components/CustomUserInput";
 
 export default function Index() {
   const [values, setValues] = useState({
-    "£20": 0,
-    "£10": 0,
+    "": 0,
   });
 
   const [expectedValue, setExpectedValue] = useState(0);
@@ -55,56 +54,72 @@ export default function Index() {
       >
         Tiapa Calc
       </Text>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> */}
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+        }}
+      >
         <View
           style={{
             flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
+            marginLeft: 110,
+            marginRight: 15,
           }}
         >
-          <View
-            style={{
-              flex: 1,
-              marginTop: 10,
-              width: 130,
-              paddingLeft: 0,
-            }}
-          >
-            <CustomUserInput label="£20" onBlur={handleValues} />
-            <CustomUserInput label="£10" onBlur={handleValues} />
-            <CustomUserInput label="£5" onBlur={handleValues} />
-            <CustomUserInput label="£2" onBlur={handleValues} />
-            <CustomUserInput label="£1" onBlur={handleValues} />
-            <CustomUserInput label="50p" onBlur={handleValues} />
-            <CustomUserInput label="20p" onBlur={handleValues} />
-            <CustomUserInput label="10p" onBlur={handleValues} />
-            <CustomUserInput label="5p" onBlur={handleValues} />
-            <CustomUserInput label="2p" onBlur={handleValues} />
-            <CustomUserInput label="1p" onBlur={handleValues} />
-            <CustomUserInput
-              label="Total"
-              allowInput={false}
-              style={{ borderWidth: 2, borderColor: "black" }}
-              value={displayTotalValue}
-              validateUserInput={false}
-            />
-            <CustomUserInput
-              label="Expected"
-              onBlur={handleExpectedValue}
-              validateUserInput={false}
-              style={{ borderWidth: 2 }}
-            />
-            <CustomUserInput
-              label="Difference"
-              allowInput={false}
-              style={{ borderWidth: 1, borderColor: handleDifferenceBorder() }}
-              value={displayDifference}
-              validateUserInput={false}
-            />
-          </View>
+          <CustomUserInput label="£20" onBlur={handleValues} />
+          <CustomUserInput label="£10" onBlur={handleValues} />
+          <CustomUserInput label="£5" onBlur={handleValues} />
+          <CustomUserInput label="£2" onBlur={handleValues} />
+          <CustomUserInput label="£1" onBlur={handleValues} />
+          <CustomUserInput label="50p" onBlur={handleValues} />
+          <CustomUserInput label="20p" onBlur={handleValues} />
+          <CustomUserInput label="10p" onBlur={handleValues} />
+          <CustomUserInput label="5p" onBlur={handleValues} />
+          <CustomUserInput label="2p" onBlur={handleValues} />
+          <CustomUserInput label="1p" onBlur={handleValues} />
+          <CustomUserInput
+            label="Total"
+            allowInput={false}
+            style={{ borderWidth: 2, borderColor: "black" }}
+            value={displayTotalValue}
+            validateUserInput={false}
+          />
+          <CustomUserInput
+            label="Expected"
+            onBlur={handleExpectedValue}
+            validateUserInput={false}
+            style={{ borderWidth: 2 }}
+          />
+          <CustomUserInput
+            label="Difference"
+            allowInput={false}
+            style={{ borderWidth: 1, borderColor: handleDifferenceBorder() }}
+            value={displayDifference}
+            validateUserInput={false}
+          />
         </View>
-      </TouchableWithoutFeedback>
+        <Pressable
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            margin: 10,
+            marginRight: 20,
+            maxWidth: 80,
+            height: 30,
+            borderWidth: 1,
+            borderRadius: 10,
+          }}
+          onPress={() => {
+            console.log("sup");
+          }}
+        >
+          <Text>Clear</Text>
+        </Pressable>
+      </View>
+      {/* </TouchableWithoutFeedback> */}
     </Fragment>
   );
 }
