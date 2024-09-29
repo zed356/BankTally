@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, TextInput, ViewStyle } from "react-native";
 
 import UserInputValidator from "./UserInputValidator";
+import { ICurrencyObject } from "..";
 
 interface InputProps {
   label: string;
@@ -11,6 +12,7 @@ interface InputProps {
   onBlur?: (target: string, value: string) => void;
   maxLength?: number;
   validateUserInput?: boolean;
+  values: ICurrencyObject;
 }
 
 const CustomUserInput: React.FC<InputProps> = ({
@@ -21,14 +23,11 @@ const CustomUserInput: React.FC<InputProps> = ({
   onBlur = () => {},
   maxLength = 7,
   validateUserInput = true,
+  values,
 }) => {
   const [focused, setFocused] = useState(false);
 
-  const [val, setVal] = useState("0");
-
-  const handleVal = (newVal: string) => {
-    setVal(newVal);
-  };
+  let val = values[label as keyof ICurrencyObject].toString();
 
   const handleFocused = () => {
     setFocused(!focused);
@@ -52,6 +51,7 @@ const CustomUserInput: React.FC<InputProps> = ({
       }}
     >
       <Text>{label}</Text>
+      {/* <label>{label}</label> */}
       <TextInput
         style={{
           height: 30,
@@ -73,8 +73,10 @@ const CustomUserInput: React.FC<InputProps> = ({
         inputMode="numeric"
         readOnly={!allowInput}
         placeholder="0"
-        onChangeText={handleVal}
-        value={value}
+        onChangeText={(value) => {
+          onBlur(label, value);
+        }}
+        value={value || val}
         maxLength={validateUserInput ? calcMaxInputLength() : maxLength}
       />
     </View>
