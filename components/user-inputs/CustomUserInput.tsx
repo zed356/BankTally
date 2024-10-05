@@ -41,6 +41,12 @@ const CustomUserInput: React.FC<InputProps> = ({
     return Number(temp.length + 3);
   };
 
+  // styles
+
+  const getBorderColor = () => {
+    return Number(val) !== 0 && !UserInputValidator(label, validateUserInput, val) ? "red" : "gray";
+  };
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -50,8 +56,7 @@ const CustomUserInput: React.FC<InputProps> = ({
     },
     userInput: {
       height: 30,
-      borderColor:
-        Number(val) != 0 && !UserInputValidator(label, validateUserInput, val) ? "red" : "gray",
+      borderColor: getBorderColor(),
       borderWidth: 1,
       width: 60,
       paddingLeft: 3,
