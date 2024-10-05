@@ -7,9 +7,11 @@ import { ICurrencyObject } from "@/types/UserInputTypes";
 import { getUserInputValuesFromStorage } from "@/stores/PersistentStorage";
 import CustomUserInput from "./CustomUserInput";
 import { defaultValues } from "@/constants/DefaultUserInputValues";
+import ErrorModal from "./ErrorModal";
 
 const UserInputList: React.FC = () => {
   const [values, setValues] = useState(defaultValues);
+  const [showErrorModal, setShowErrorModal] = useState(false);
 
   // loads old data if there is any upon app start
   useEffect(() => {
@@ -165,6 +167,12 @@ const UserInputList: React.FC = () => {
           <Text>Clear</Text>
         </Pressable>
       </Animated.View>
+      <ErrorModal
+        modalVisible={showErrorModal}
+        closeErrorModal={() => {
+          setShowErrorModal(false);
+        }}
+      />
     </View>
   );
 };
