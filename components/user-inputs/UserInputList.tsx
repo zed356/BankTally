@@ -1,4 +1,4 @@
-import { View, Pressable, Text } from "react-native";
+import { View, Pressable, Text, StyleSheet } from "react-native";
 import CustomUserInput from "./CustomUserInput";
 import { useUserInputStore } from "@/stores/UserInputContext";
 import { writeItemToStorage } from "@/stores/PersistentStorage";
@@ -52,23 +52,35 @@ const UserInputList: React.FC = () => {
 
   const displayDifference = (displayTotalValue - +values.Expected).toFixed(2);
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      flexDirection: "row",
+      paddingTop: 10,
+      backgroundColor: "#e7eaf6",
+    },
+    inputList: {
+      flex: 1,
+      marginLeft: 110,
+      marginRight: 15,
+      height: "95%",
+    },
+    clearButton: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+      margin: 10,
+      marginRight: 20,
+      maxWidth: 80,
+      height: 30,
+      borderWidth: 1,
+      borderRadius: 10,
+    },
+  });
+
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        backgroundColor: "#e7eaf6",
-      }}
-    >
-      <View
-        style={{
-          flex: 1,
-          marginLeft: 110,
-          marginRight: 15,
-          height: "95%",
-        }}
-      >
+    <View style={styles.container}>
+      <View style={styles.inputList}>
         <CustomUserInput label="£20" onBlur={handleValues} values={values} />
         <CustomUserInput label="£10" onBlur={handleValues} values={values} />
         <CustomUserInput label="£5" onBlur={handleValues} values={values} />
@@ -105,17 +117,7 @@ const UserInputList: React.FC = () => {
         />
       </View>
       <Pressable
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          margin: 10,
-          marginRight: 20,
-          maxWidth: 80,
-          height: 30,
-          borderWidth: 1,
-          borderRadius: 10,
-        }}
+        style={styles.clearButton}
         onPress={() => {
           clearSetValues();
         }}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, ViewStyle } from "react-native";
+import { View, Text, TextInput, ViewStyle, StyleSheet } from "react-native";
 
 import UserInputValidator from "../helper/UserInputValidator";
 import { ICurrencyObject } from "@/types/UserInputTypes";
@@ -41,29 +41,31 @@ const CustomUserInput: React.FC<InputProps> = ({
     return Number(temp.length + 3);
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+    },
+    userInput: {
+      height: 30,
+      borderColor:
+        Number(val) != 0 && !UserInputValidator(label, validateUserInput, val) ? "red" : "gray",
+      borderWidth: 1,
+      width: 60,
+      paddingLeft: 3,
+      pointerEvents: allowInput ? "auto" : "none",
+      color: "black",
+      ...style,
+    },
+  });
+
   return (
-    <View
-      style={{
-        flex: 1,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
+    <View style={styles.container}>
       <Text>{label}</Text>
-      {/* <label>{label}</label> */}
       <TextInput
-        style={{
-          height: 30,
-          borderColor:
-            Number(val) != 0 && !UserInputValidator(label, validateUserInput, val) ? "red" : "gray",
-          borderWidth: 1,
-          width: 60,
-          paddingLeft: 3,
-          pointerEvents: allowInput ? "auto" : "none",
-          color: "black",
-          ...style,
-        }}
+        style={styles.userInput}
         placeholderTextColor={focused ? "transparent" : "black"}
         onFocus={handleFocused}
         onBlur={() => {
