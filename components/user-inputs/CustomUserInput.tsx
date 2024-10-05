@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { View, Text, TextInput, ViewStyle } from "react-native";
 
-import UserInputValidator from "./UserInputValidator";
-import { ICurrencyObject } from "..";
+import UserInputValidator from "../helper/UserInputValidator";
+import { ICurrencyObject } from "@/types/UserInputTypes";
 
 interface InputProps {
   label: string;
