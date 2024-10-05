@@ -1,22 +1,34 @@
+import { useEffect, useState } from "react";
 import { View, Pressable, Text, StyleSheet } from "react-native";
-import CustomUserInput from "./CustomUserInput";
-import { useUserInputStore } from "@/stores/UserInputContext";
-import { writeItemToStorage } from "@/stores/PersistentStorage";
+import { writeUserInputValuesToStorage } from "@/stores/PersistentStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { ICurrencyObject } from "@/types/UserInputTypes";
+import { getUserInputValuesFromStorage } from "@/stores/PersistentStorage";
+import CustomUserInput from "./CustomUserInput";
+import { defaultValues } from "@/constants/DefaultUserInputValues";
 
 const UserInputList: React.FC = () => {
-  const userInputStore = useUserInputStore();
-  const values = userInputStore.values;
-  const updateValues = userInputStore.update;
+  const [values, setValues] = useState(defaultValues);
 
-  const handleValues = (target: string, value: string) => {
+  // loads old data if there is any upon app start
+  useEffect(() => {
+    (async () => {
+      try {
+        setValues(await getUserInputValuesFromStorage());
+      } catch (error) {
+        // TODO: render error UI
+      }
+    })();
+  }, []);
+
+  const handleValues = (target: keyof ICurrencyObject, value: string) => {
     const newValues = {
       ...values,
       [target]: value,
     };
-    writeItemToStorage(newValues);
-    updateValues(newValues);
+    writeUserInputValuesToStorage(newValues);
+    setValues(newValues);
   };
 
   const clearSetValues = async () => {
@@ -25,7 +37,7 @@ const UserInputList: React.FC = () => {
     } catch (e) {
       console.log("oops");
     }
-    userInputStore.clear();
+    setValues(defaultValues);
   };
 
   const handleDifferenceBorder = () => {
@@ -109,20 +121,14 @@ const UserInputList: React.FC = () => {
     },
   });
 
+  const inputLabels = ["£20", "£10", "£5", "£2", "£1", "50p", "20p", "10p", "5p", "2p", "1p"];
+
   return (
     <View style={styles.container}>
       <View style={styles.inputList}>
-        <CustomUserInput label="£20" onBlur={handleValues} values={values} />
-        <CustomUserInput label="£10" onBlur={handleValues} values={values} />
-        <CustomUserInput label="£5" onBlur={handleValues} values={values} />
-        <CustomUserInput label="£2" onBlur={handleValues} values={values} />
-        <CustomUserInput label="£1" onBlur={handleValues} values={values} />
-        <CustomUserInput label="50p" onBlur={handleValues} values={values} />
-        <CustomUserInput label="20p" onBlur={handleValues} values={values} />
-        <CustomUserInput label="10p" onBlur={handleValues} values={values} />
-        <CustomUserInput label="5p" onBlur={handleValues} values={values} />
-        <CustomUserInput label="2p" onBlur={handleValues} values={values} />
-        <CustomUserInput label="1p" onBlur={handleValues} values={values} />
+        {inputLabels.map((label, index) => (
+          <CustomUserInput key={index} label={label} onBlur={handleValues} values={values} />
+        ))}
         <CustomUserInput
           label="Total"
           allowInput={false}
