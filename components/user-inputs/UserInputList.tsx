@@ -79,12 +79,12 @@ const UserInputList: React.FC = () => {
     container: {
       flex: 1,
       flexDirection: "row",
-      paddingTop: 10,
+      paddingTop: 35,
       backgroundColor: "#e7eaf6",
     },
     inputList: {
       flex: 1,
-      marginLeft: 110,
+      marginLeft: 105,
       marginRight: 15,
       height: "95%",
     },
@@ -95,7 +95,7 @@ const UserInputList: React.FC = () => {
       margin: 10,
       marginRight: 20,
       maxWidth: 80,
-      height: 30, // Consider using flex or dynamic sizing if necessary
+      height: 30,
       borderWidth: 1,
       borderRadius: 10,
       userSelect: "none",
@@ -104,7 +104,7 @@ const UserInputList: React.FC = () => {
     clearButton: {
       justifyContent: "center",
       alignItems: "center",
-      height: "100%", // Consider using dynamic sizing instead of fixed
+      height: "100%",
       width: "100%",
     },
   });
