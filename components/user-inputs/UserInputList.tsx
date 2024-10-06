@@ -7,7 +7,7 @@ import { ICurrencyObject } from "@/types/UserInputTypes";
 import { getUserInputValuesFromStorage } from "@/stores/PersistentStorage";
 import CustomUserInput from "./CustomUserInput";
 import { defaultValues } from "@/constants/DefaultUserInputValues";
-import ErrorModal from "./ErrorModal";
+import ErrorModal from "../ErrorModal";
 
 const UserInputList: React.FC = () => {
   const [values, setValues] = useState(defaultValues);
@@ -19,7 +19,7 @@ const UserInputList: React.FC = () => {
       try {
         setValues(await getUserInputValuesFromStorage());
       } catch (error) {
-        // TODO: render error UI
+        setShowErrorModal(true);
       }
     })();
   }, []);

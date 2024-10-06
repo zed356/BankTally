@@ -24,7 +24,7 @@ const CustomUserInput: React.FC<InputProps> = ({
   validateUserInput = true,
   values,
 }) => {
-  const [focused, setFocused] = useState(false);
+  const [focused, setFocused] = useState(false); // makes placeholder transparent when user selects input field
 
   let val = values[label as keyof ICurrencyObject].toString();
 
