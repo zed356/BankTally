@@ -18,7 +18,6 @@ const UserInputList: React.FC = () => {
     (async () => {
       try {
         setValues(await getUserInputValuesFromStorage());
-        setShowErrorModal(true);
       } catch (error) {
         setShowErrorModal(true);
       }
