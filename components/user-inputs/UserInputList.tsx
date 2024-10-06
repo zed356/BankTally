@@ -18,6 +18,7 @@ const UserInputList: React.FC = () => {
     (async () => {
       try {
         setValues(await getUserInputValuesFromStorage());
+        setShowErrorModal(true);
       } catch (error) {
         setShowErrorModal(true);
       }
@@ -169,6 +170,7 @@ const UserInputList: React.FC = () => {
       </Animated.View>
       <ErrorModal
         modalVisible={showErrorModal}
+        errorMessage={`Failed to load data from storage.\nAll fields reset.`}
         closeErrorModal={() => {
           setShowErrorModal(false);
         }}

@@ -2,10 +2,11 @@ import { Modal, StyleSheet, View, Pressable, Text } from "react-native";
 
 interface ModalProps {
   modalVisible: boolean;
+  errorMessage: string;
   closeErrorModal: () => void;
 }
 
-const ErrorModal: React.FC<ModalProps> = ({ modalVisible, closeErrorModal }) => {
+const ErrorModal: React.FC<ModalProps> = ({ modalVisible, errorMessage, closeErrorModal }) => {
   const styles = StyleSheet.create({
     centeredView: {
       flex: 1,
@@ -62,7 +63,7 @@ const ErrorModal: React.FC<ModalProps> = ({ modalVisible, closeErrorModal }) => 
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Failed to load data from storage</Text>
+          <Text style={styles.modalText}>{errorMessage}</Text>
           <Pressable style={[styles.button, styles.buttonClose]} onPress={() => closeErrorModal()}>
             <Text style={styles.textStyle}>Okay</Text>
           </Pressable>
