@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "eod-calc",
-    "slug": "my-app",
+    "name": "BankTally",
+    "slug": "banktally",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "icon": "./assets/icons/ic_launcher.png",
+    "scheme": "banktally",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -13,14 +13,16 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ztamoa.banktally"
     },
     "android": {
+      "permissions": ["android.permission.BLUETOOTH_CONNECT"],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/icons/calc-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.myapp"
+      "package": "com.ztamoa.banktally"
     },
     "web": {
       "bundler": "metro",
