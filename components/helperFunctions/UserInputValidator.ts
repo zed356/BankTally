@@ -12,16 +12,9 @@ const UserInputValidator = (label: string, validateUserInput: boolean, val: stri
       return true;
     }
 
-    if (+numAfterDecimal == 0) {
-      return true;
-    }
+    if (numAfterDecimal.length == 1) numAfterDecimal += "0";
 
-    if (numAfterDecimal.length == 1) {
-      numAfterDecimal += 0;
-      return +numAfterDecimal % labelToNumber == 0;
-    } else if (labelToNumber < 10) {
-      return +numAfterDecimal[1] % labelToNumber == 0;
-    }
+    return +numAfterDecimal % labelToNumber == 0;
   }
   return false;
 };
