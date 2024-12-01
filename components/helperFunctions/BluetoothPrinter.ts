@@ -67,6 +67,14 @@ export const BluetoothPrinter = async (values: ICurrencyObject, displayTotalValu
 
       if (value.includes(".")) {
         const decimalPart = value.split(".")[1];
+
+        // if 0, means it's just a decimal point with nothing after it
+        // remove it completely and add 3 spaces at the end
+        if (decimalPart.length == 0) {
+          printedValue = value.split(".")[0];
+          printedValue = printedValue.padEnd(printedValue.length + 3, " ");
+        }
+
         // if only 1 digit after decimal, add 1 space. else it's 2 digits and no space needed
         if (decimalPart.length == 1) {
           printedValue = printedValue.padEnd(printedValue.length + 1, " ");
