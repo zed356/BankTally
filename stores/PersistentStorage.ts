@@ -1,4 +1,4 @@
-import { defaultValues } from "@/constants/DefaultUserInputValues";
+import { defaultValues } from "@/constants/Values";
 import { ICurrencyObject } from "@/types/UserInputTypes";
 import { useAsyncStorage } from "@react-native-async-storage/async-storage";
 
