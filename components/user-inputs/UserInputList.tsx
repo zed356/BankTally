@@ -15,6 +15,7 @@ import { DisplayTotalValue } from "../helperFunctions/DisplayTotalValue";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import ErrorModal from "../modals/ErrorModal";
 import CustomUserInput from "./CustomUserInput";
+import UserInputValidator from "../helperFunctions/UserInputValidator";
 
 const UserInputList: React.FC = () => {
   const [values, setValues] = useState(defaultValues);
@@ -74,6 +75,24 @@ const UserInputList: React.FC = () => {
   };
 
   const handlePrinter = _.debounce(async () => {
+    // keys under [0], values under [1]
+    const valuesToArray = Object.entries(values);
+    // filter out values that are not in the inputLabels array
+    const valuesWithoutDifferenceTotalExpected = valuesToArray.filter((value) =>
+      inputLabels.includes(value[0])
+    );
+
+    // final value validation check before printing
+    if (
+      !valuesWithoutDifferenceTotalExpected.every((value) =>
+        UserInputValidator(value[0], true, value[1])
+      )
+    ) {
+      setErrorModalMessage("Please enter valid values.");
+      setShowErrorModal(true);
+      return;
+    }
+
     try {
       await BluetoothPrinter(values, displayTotalValue);
     } catch (e: unknown) {
