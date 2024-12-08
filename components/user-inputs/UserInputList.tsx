@@ -65,12 +65,13 @@ const UserInputList: React.FC = () => {
 
   const handleDifferenceBorder = () => {
     const temp = Number(displayDifference);
+    if (values.Expected.length === 0) {
+      return "#e1e1e1";
+    }
     if (temp > 0) {
-      return "green";
+      return "#98FB98";
     } else if (temp < 0) {
-      return "red";
-    } else {
-      return "gray";
+      return "#FF000033";
     }
   };
 
@@ -83,7 +84,12 @@ const UserInputList: React.FC = () => {
     );
 
     // final value validation check before printing
+    // 1. check if any value is greater than 0
+    // 2. check if all values are valid against their label
     if (
+      !valuesWithoutDifferenceTotalExpected.some((value) => {
+        return Number(value[1]) > 0;
+      }) ||
       !valuesWithoutDifferenceTotalExpected.every((value) =>
         UserInputValidator(value[0], true, value[1])
       )
@@ -127,7 +133,7 @@ const UserInputList: React.FC = () => {
         <CustomUserInput
           label="Total"
           allowInput={false}
-          style={{ borderWidth: 1, borderColor: "black" }}
+          style={{ borderWidth: 1, borderColor: "black", backgroundColor: "#e1e1e1" }}
           value={displayTotalValue.toFixed(2)}
           validateUserInput={false}
           values={values}
@@ -136,14 +142,18 @@ const UserInputList: React.FC = () => {
           label="Expected"
           onBlur={handleValues}
           validateUserInput={false}
-          style={{ borderWidth: 2 }}
+          style={{ borderWidth: 1, backgroundColor: "#f1f1f1" }}
           values={values}
         />
         <CustomUserInput
           label="Difference"
           allowInput={false}
-          style={{ borderWidth: 1, borderColor: handleDifferenceBorder() }}
-          value={displayDifference}
+          style={{
+            borderWidth: 1.5,
+            borderColor: "#a1a1a1",
+            backgroundColor: handleDifferenceBorder(),
+          }}
+          value={values.Expected.length > 0 ? displayDifference : ""}
           validateUserInput={false}
           values={values}
         />

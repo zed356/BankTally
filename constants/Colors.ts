@@ -23,5 +23,5 @@ export const Colors = {
     tabIconDefault: "#9BA1A6",
     tabIconSelected: tintColorDark,
   },
-  defaultGradient: ["white", "#A1A1A1"],
+  defaultGradient: ["#f9f9f9", "#dedede"],
 };

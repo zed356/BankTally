@@ -64,7 +64,7 @@ const CustomUserInput: React.FC<InputProps> = ({
       backgroundColor:
         (!isUserInputValid() && "#FF000033") ||
         (isUserInputValid() && val && "#98FB98") ||
-        "#d4d4d4",
+        "#f1f1f1",
       borderWidth: 1,
       borderRadius: 5,
       width: 60,
