@@ -49,11 +49,11 @@ const CustomButton: React.FC<CustomButtonProps> = ({ type, text, onPress, isDisa
   const gradientColors = useMemo(() => {
     switch (type) {
       case "positive":
-        return ["#28a745", "#218838"];
+        return ["#34c759", "#28a745"];
       case "negative":
-        return ["#dc3545", "#c82333"];
+        return ["#ff3b30", "#dc3545"];
       case "neutral":
-        return ["#ffc107", "#e0a800"];
+        return ["#ffcd38", "#ffc107"];
     }
   }, [type]);
 
