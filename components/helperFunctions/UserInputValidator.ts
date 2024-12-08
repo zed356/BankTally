@@ -19,13 +19,14 @@ const UserInputValidator = (label: string, validateUserInput: boolean, val: stri
   else if (label[label.length - 1] == "p") {
     // Find the position of the decimal point in the user input (if any)
     const decimalIndex = val.indexOf(".");
-    let numAfterDecimal = val.slice(decimalIndex + 1); // Get the part of the input after the decimal point
-    const labelToNumber = +label.slice(0, -1); // Convert the label (minus the 'p') to a number
-
-    // If there's no decimal point or if there's only one digit after the decimal point, the input is valid
-    if (decimalIndex == -1 || val.slice(decimalIndex).length == 1) {
+    // If there's no decimal point AND number above 0, return true (whole number is valid)
+    if (decimalIndex === -1 && Number(val) > 0) {
       return true;
     }
+
+    // If there's a decimal point, check the digits after the decimal point
+    let numAfterDecimal = val.slice(decimalIndex + 1); // Get the part of the input after the decimal point
+    const labelToNumber = +label.slice(0, -1); // Convert the label (minus the 'p') to a number
 
     // Ensure there are exactly two digits after the decimal point for validation
     if (numAfterDecimal.length == 1) numAfterDecimal += "0"; // Add a trailing zero if needed
