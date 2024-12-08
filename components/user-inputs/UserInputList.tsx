@@ -5,19 +5,21 @@ import {
 } from "@/stores/PersistentStorage";
 import { ICurrencyObject } from "@/types/UserInputTypes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useCallback, useEffect, useState } from "react";
-import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
-import ErrorModal from "../ErrorModal";
+import _ from "lodash";
+import { useEffect, useState } from "react";
+import { Linking, StyleSheet, View } from "react-native";
+import BluetoothStateManager from "react-native-bluetooth-state-manager";
+import CustomButton from "../custom-elements/CustomButton";
 import { BluetoothPrinter } from "../helperFunctions/BluetoothPrinter";
 import { DisplayTotalValue } from "../helperFunctions/DisplayTotalValue";
+import ConfirmationModal from "../modals/ConfirmationModal";
+import ErrorModal from "../modals/ErrorModal";
 import CustomUserInput from "./CustomUserInput";
-import _ from "lodash";
-import BluetoothStateManager from "react-native-bluetooth-state-manager";
 
 const UserInputList: React.FC = () => {
   const [values, setValues] = useState(defaultValues);
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [errorModalMessage, setErrorModalMessage] = useState("");
 
   // loads old data if there is any upon app start
@@ -37,22 +39,6 @@ const UserInputList: React.FC = () => {
   // convert to ints before calculations to avoid floating point errors
   const displayDifference = ((displayTotalValue * 100 - +values.Expected * 100) / 100).toFixed(2);
 
-  const clearButtonOpacity = useSharedValue(1); // initial opacity
-
-  const printButtonOpacity = useSharedValue(1); // initial opacity
-
-  const clearButtonAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: clearButtonOpacity.value,
-    };
-  });
-
-  const printButtonAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: printButtonOpacity.value,
-    };
-  });
-
   const handleValues = (target: keyof ICurrencyObject, value: string) => {
     const newValues = {
       ...values,
@@ -62,13 +48,18 @@ const UserInputList: React.FC = () => {
     setValues(newValues);
   };
 
-  const clearSetValues = async () => {
+  const clearValues = async () => {
     try {
       await AsyncStorage.clear();
     } catch (e) {
       console.log("oops");
     }
     setValues(defaultValues);
+    setShowConfirmationModal(false);
+  };
+
+  const handleClearValues = () => {
+    setShowConfirmationModal(true);
   };
 
   const handleDifferenceBorder = () => {
@@ -117,7 +108,7 @@ const UserInputList: React.FC = () => {
         <CustomUserInput
           label="Total"
           allowInput={false}
-          style={{ borderWidth: 2, borderColor: "black" }}
+          style={{ borderWidth: 1, borderColor: "black" }}
           value={displayTotalValue.toFixed(2)}
           validateUserInput={false}
           values={values}
@@ -139,28 +130,8 @@ const UserInputList: React.FC = () => {
         />
       </View>
       <View style={styles.buttonsContainer}>
-        <Animated.View style={[clearButtonAnimatedStyle]}>
-          <Pressable
-            onPressIn={() => (clearButtonOpacity.value = withTiming(0.5, { duration: 100 }))}
-            onPressOut={() => (clearButtonOpacity.value = withTiming(1, { duration: 100 }))}
-            style={styles.button}
-            onPress={() => {
-              clearSetValues();
-            }}
-          >
-            <Text>Clear</Text>
-          </Pressable>
-        </Animated.View>
-        <Animated.View style={[printButtonAnimatedStyle]}>
-          <Pressable
-            style={styles.button}
-            onPressIn={() => (printButtonOpacity.value = withTiming(0.5, { duration: 100 }))}
-            onPressOut={() => (printButtonOpacity.value = withTiming(1, { duration: 100 }))}
-            onPress={handlePrinter}
-          >
-            <Text>Print</Text>
-          </Pressable>
-        </Animated.View>
+        <CustomButton type="neutral" text="Clear" onPress={handleClearValues} />
+        <CustomButton type="neutral" text="Print" onPress={handlePrinter} />
       </View>
       <ErrorModal
         modalVisible={showErrorModal}
@@ -169,6 +140,12 @@ const UserInputList: React.FC = () => {
           errorHandler(errorModalMessage);
           setShowErrorModal(false);
         }}
+      />
+      <ConfirmationModal
+        modalVisible={showConfirmationModal}
+        text="Are you sure you want to clear all values?"
+        onConfirm={clearValues}
+        onCancel={() => setShowConfirmationModal(false)}
       />
     </View>
   );
@@ -179,7 +156,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     paddingTop: 35,
-    backgroundColor: "#e7eaf6",
   },
   inputList: {
     flex: 1,
