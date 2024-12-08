@@ -16,7 +16,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onCancel,
 }) => {
   return (
-    <BaseModal modalVisible={modalVisible}>
+    <BaseModal modalVisible={modalVisible} onRequestClose={onCancel}>
       <Text style={styles.text}>{text}</Text>
       <View style={styles.buttonContainer}>
         <CustomButton type="positive" text="Confirm" onPress={onConfirm} />

@@ -1,4 +1,4 @@
-import { defaultValues, inputLabels } from "@/constants/Values";
+import { DEFAULT_BORDER_RADIUS, defaultValues, inputLabels } from "@/constants/Values";
 import {
   getUserInputValuesFromStorage,
   writeUserInputValuesToStorage,
@@ -168,18 +168,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
     width: "100%",
-  },
-
-  button: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    height: 30,
-    paddingHorizontal: 20,
-    borderWidth: 1,
-    borderRadius: 10,
-    userSelect: "none",
-    backgroundColor: "#D1D9DF",
   },
 });
 
