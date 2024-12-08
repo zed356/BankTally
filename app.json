@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "BankTally",
-    "slug": "banktally",
+    "slug": "my-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icons/ic_launcher.png",
@@ -19,7 +19,7 @@
     "android": {
       "permissions": ["android.permission.BLUETOOTH_CONNECT"],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icons/calc-icon.png",
+        "foregroundImage": "./assets/icons/ic_launcher.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.ztamoa.banktally"
