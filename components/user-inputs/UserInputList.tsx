@@ -1,8 +1,9 @@
-import { DEFAULT_BORDER_RADIUS, defaultValues, inputLabels } from "@/constants/Values";
+import { defaultValues, inputLabels } from "@/constants/Values";
 import {
   getUserInputValuesFromStorage,
   writeUserInputValuesToStorage,
 } from "@/stores/PersistentStorage";
+import { useUserInputStore } from "@/stores/UserInputStore";
 import { ICurrencyObject } from "@/types/UserInputTypes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import _ from "lodash";
@@ -10,15 +11,15 @@ import { useEffect, useState } from "react";
 import { Linking, StyleSheet, View } from "react-native";
 import BluetoothStateManager from "react-native-bluetooth-state-manager";
 import CustomButton from "../custom-elements/CustomButton";
-import { BluetoothPrinter } from "../helperFunctions/BluetoothPrinter";
-import { DisplayTotalValue } from "../helperFunctions/DisplayTotalValue";
+import { BluetoothPrinter } from "../helper-functions/BluetoothPrinter";
+import { DisplayTotalValue } from "../helper-functions/DisplayTotalValue";
+import UserInputValidator from "../helper-functions/UserInputValidator";
 import ConfirmationModal from "../modals/ConfirmationModal";
 import ErrorModal from "../modals/ErrorModal";
 import CustomUserInput from "./CustomUserInput";
-import UserInputValidator from "../helperFunctions/UserInputValidator";
 
 const UserInputList: React.FC = () => {
-  const [values, setValues] = useState(defaultValues);
+  const { userInputValues, setUserInputValues } = useUserInputStore();
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [errorModalMessage, setErrorModalMessage] = useState("");
@@ -27,7 +28,7 @@ const UserInputList: React.FC = () => {
   useEffect(() => {
     (async () => {
       try {
-        setValues(await getUserInputValuesFromStorage());
+        setUserInputValues(await getUserInputValuesFromStorage());
       } catch (error) {
         setErrorModalMessage("Failed to load data from storage.");
         setShowErrorModal(true);
@@ -35,18 +36,21 @@ const UserInputList: React.FC = () => {
     })();
   }, []);
 
-  const displayTotalValue = DisplayTotalValue(values);
+  const displayTotalValue = DisplayTotalValue(userInputValues);
 
-  // convert to ints before calculations to avoid floating point errors
-  const displayDifference = ((displayTotalValue * 100 - +values.Expected * 100) / 100).toFixed(2);
+  // convert to ints before calculations to avoid floating point precision errors
+  const displayDifference = (
+    (displayTotalValue * 100 - +userInputValues.Expected * 100) /
+    100
+  ).toFixed(2);
 
-  const handleValues = (target: keyof ICurrencyObject, value: string) => {
+  const handleUserInputValues = (target: keyof ICurrencyObject, value: string) => {
     const newValues = {
-      ...values,
+      ...userInputValues,
       [target]: value,
     };
     writeUserInputValuesToStorage(newValues);
-    setValues(newValues);
+    setUserInputValues(newValues);
   };
 
   const clearValues = async () => {
@@ -55,7 +59,7 @@ const UserInputList: React.FC = () => {
     } catch (e) {
       console.log("oops");
     }
-    setValues(defaultValues);
+    setUserInputValues(defaultValues);
     setShowConfirmationModal(false);
   };
 
@@ -65,7 +69,7 @@ const UserInputList: React.FC = () => {
 
   const handleDifferenceBorder = () => {
     const temp = Number(displayDifference);
-    if (values.Expected.length === 0) {
+    if (userInputValues.Expected.length === 0) {
       return "#e1e1e1";
     }
     if (temp > 0) {
@@ -77,7 +81,7 @@ const UserInputList: React.FC = () => {
 
   const handlePrinter = _.debounce(async () => {
     // keys under [0], values under [1]
-    const valuesToArray = Object.entries(values);
+    const valuesToArray = Object.entries(userInputValues);
     // filter out values that are not in the inputLabels array
     const valuesWithoutDifferenceTotalExpected = valuesToArray.filter((value) =>
       inputLabels.includes(value[0])
@@ -100,7 +104,7 @@ const UserInputList: React.FC = () => {
     }
 
     try {
-      await BluetoothPrinter(values, displayTotalValue);
+      await BluetoothPrinter(userInputValues, displayTotalValue);
     } catch (e: unknown) {
       if (e instanceof Error) {
         setErrorModalMessage(e.message);
@@ -128,7 +132,12 @@ const UserInputList: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.inputList}>
         {inputLabels.map((label, index) => (
-          <CustomUserInput key={index} label={label} onBlur={handleValues} values={values} />
+          <CustomUserInput
+            key={index}
+            label={label}
+            onBlur={handleUserInputValues}
+            values={userInputValues}
+          />
         ))}
         <CustomUserInput
           label="Total"
@@ -136,14 +145,14 @@ const UserInputList: React.FC = () => {
           style={{ borderWidth: 1, borderColor: "black", backgroundColor: "#e1e1e1" }}
           value={displayTotalValue.toFixed(2)}
           validateUserInput={false}
-          values={values}
+          values={userInputValues}
         />
         <CustomUserInput
           label="Expected"
-          onBlur={handleValues}
+          onBlur={handleUserInputValues}
           validateUserInput={false}
           style={{ borderWidth: 1, backgroundColor: "#f1f1f1" }}
-          values={values}
+          values={userInputValues}
         />
         <CustomUserInput
           label="Difference"
@@ -153,9 +162,9 @@ const UserInputList: React.FC = () => {
             borderColor: "#a1a1a1",
             backgroundColor: handleDifferenceBorder(),
           }}
-          value={values.Expected.length > 0 ? displayDifference : ""}
+          value={userInputValues.Expected.length > 0 ? displayDifference : ""}
           validateUserInput={false}
-          values={values}
+          values={userInputValues}
         />
       </View>
       <View style={styles.buttonsContainer}>
