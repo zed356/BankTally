@@ -1,19 +1,15 @@
-import { DEFAULT_BORDER_RADIUS } from "@/constants/Values";
-import { Modal, StyleSheet, View, Pressable, Text } from "react-native";
+import { useErrorModalStore } from "@/stores/ErrorModalStore";
+import { StyleSheet, Text } from "react-native";
 import CustomButton from "../custom-elements/CustomButton";
 import BaseModal from "./BaseModal";
 
-interface ModalProps {
-  modalVisible: boolean;
-  errorMessage: string;
-  closeErrorModal: () => void;
-}
-
-const ErrorModal: React.FC<ModalProps> = ({ modalVisible, errorMessage, closeErrorModal }) => {
+const ErrorModal: React.FC = () => {
+  const { isVisible, message, closeErrorModal, actionButtonName, onActionButtonPress } =
+    useErrorModalStore();
   return (
-    <BaseModal modalVisible={modalVisible} onRequestClose={closeErrorModal}>
-      <Text style={styles.modalText}>{errorMessage}</Text>
-      <CustomButton type="negative" text="Okay" onPress={closeErrorModal} />
+    <BaseModal modalVisible={isVisible} onRequestClose={closeErrorModal}>
+      <Text style={styles.modalText}>{message}</Text>
+      <CustomButton type="negative" text={actionButtonName} onPress={onActionButtonPress} />
     </BaseModal>
   );
 };
