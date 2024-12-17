@@ -1,26 +1,16 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import BaseModal from "./BaseModal";
+import { useConfirmationModalStore } from "@/stores/ConfirmationModalStore";
+import { StyleSheet, Text, View } from "react-native";
 import CustomButton from "../custom-elements/CustomButton";
+import BaseModal from "./BaseModal";
 
-interface ConfirmationModalProps {
-  modalVisible: boolean;
-  text: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-}
-
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
-  modalVisible,
-  text,
-  onConfirm,
-  onCancel,
-}) => {
+const ConfirmationModal: React.FC = () => {
+  const { isVisible, text, onConfirm, hideConfirmationModal } = useConfirmationModalStore();
   return (
-    <BaseModal modalVisible={modalVisible} onRequestClose={onCancel}>
+    <BaseModal modalVisible={isVisible} onRequestClose={hideConfirmationModal}>
       <Text style={styles.text}>{text}</Text>
       <View style={styles.buttonContainer}>
         <CustomButton type="positive" text="Confirm" onPress={onConfirm} />
-        <CustomButton type="negative" text="Cancel" onPress={onCancel} />
+        <CustomButton type="negative" text="Cancel" onPress={hideConfirmationModal} />
       </View>
     </BaseModal>
   );

@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { View, Text, TextInput, ViewStyle, StyleSheet } from "react-native";
-import UserInputValidator from "../helperFunctions/UserInputValidator";
 import { ICurrencyObject } from "@/types/UserInputTypes";
-import { DEFAULT_BORDER_RADIUS } from "@/constants/Values";
+import { useState } from "react";
+import { StyleSheet, Text, TextInput, View, ViewStyle } from "react-native";
+import UserInputValidator from "../helper-functions/UserInputValidator";
 
 interface InputProps {
   label: string;
