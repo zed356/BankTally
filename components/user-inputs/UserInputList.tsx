@@ -1,28 +1,19 @@
-import { defaultValues, inputLabels } from "@/constants/Values";
+import { inputLabels } from "@/constants/Values";
+import { useErrorModalStore } from "@/stores/ErrorModalStore";
 import {
   getUserInputValuesFromStorage,
   writeUserInputValuesToStorage,
 } from "@/stores/PersistentStorage";
 import { useUserInputStore } from "@/stores/UserInputStore";
 import { ICurrencyObject } from "@/types/UserInputTypes";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import _ from "lodash";
-import { useEffect, useState } from "react";
-import { Linking, StyleSheet, View } from "react-native";
-import BluetoothStateManager from "react-native-bluetooth-state-manager";
-import CustomButton from "../custom-elements/CustomButton";
-import { BluetoothPrinter } from "../helper-functions/BluetoothPrinter";
+import { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
 import { DisplayTotalValue } from "../helper-functions/DisplayTotalValue";
-import UserInputValidator from "../helper-functions/UserInputValidator";
-import ConfirmationModal from "../modals/ConfirmationModal";
-import ErrorModal from "../modals/ErrorModal";
 import CustomUserInput from "./CustomUserInput";
 
 const UserInputList: React.FC = () => {
   const { userInputValues, setUserInputValues } = useUserInputStore();
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [errorModalMessage, setErrorModalMessage] = useState("");
+  const { showErrorModal, closeErrorModal } = useErrorModalStore();
 
   // loads old data if there is any upon app start
   useEffect(() => {
@@ -30,8 +21,7 @@ const UserInputList: React.FC = () => {
       try {
         setUserInputValues(await getUserInputValuesFromStorage());
       } catch (error) {
-        setErrorModalMessage("Failed to load data from storage.");
-        setShowErrorModal(true);
+        showErrorModal("Failed to load data from storage.", "OK", closeErrorModal);
       }
     })();
   }, []);
@@ -53,20 +43,6 @@ const UserInputList: React.FC = () => {
     setUserInputValues(newValues);
   };
 
-  const clearValues = async () => {
-    try {
-      await AsyncStorage.clear();
-    } catch (e) {
-      console.log("oops");
-    }
-    setUserInputValues(defaultValues);
-    setShowConfirmationModal(false);
-  };
-
-  const handleClearValues = () => {
-    setShowConfirmationModal(true);
-  };
-
   const handleDifferenceBorder = () => {
     const temp = Number(displayDifference);
     if (userInputValues.Expected.length === 0) {
@@ -79,126 +55,52 @@ const UserInputList: React.FC = () => {
     }
   };
 
-  const handlePrinter = _.debounce(async () => {
-    // keys under [0], values under [1]
-    const valuesToArray = Object.entries(userInputValues);
-    // filter out values that are not in the inputLabels array
-    const valuesWithoutDifferenceTotalExpected = valuesToArray.filter((value) =>
-      inputLabels.includes(value[0])
-    );
-
-    // final value validation check before printing
-    // 1. check if any value is greater than 0
-    // 2. check if all values are valid against their label
-    if (
-      !valuesWithoutDifferenceTotalExpected.some((value) => {
-        return Number(value[1]) > 0;
-      }) ||
-      !valuesWithoutDifferenceTotalExpected.every((value) =>
-        UserInputValidator(value[0], true, value[1])
-      )
-    ) {
-      setErrorModalMessage("Please enter valid values.");
-      setShowErrorModal(true);
-      return;
-    }
-
-    try {
-      await BluetoothPrinter(userInputValues, displayTotalValue);
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        setErrorModalMessage(e.message);
-        setShowErrorModal(true);
-      } else {
-        console.log("Unexpected error:\n", e);
-      }
-    }
-  }, 1000);
-
-  const errorHandler = (message: string) => {
-    switch (message) {
-      case "Bluetooth Device Not Found":
-        BluetoothStateManager.openSettings();
-        break;
-      case "Please enable 'Bluetooth/Find nearby devices' permissions in settings.":
-        Linking.openSettings();
-        break;
-      default:
-        break;
-    }
-  };
-
   return (
-    <View style={styles.container}>
-      <View style={styles.inputList}>
-        {inputLabels.map((label, index) => (
-          <CustomUserInput
-            key={index}
-            label={label}
-            onBlur={handleUserInputValues}
-            values={userInputValues}
-          />
-        ))}
+    <View style={styles.inputList}>
+      {inputLabels.map((label, index) => (
         <CustomUserInput
-          label="Total"
-          allowInput={false}
-          style={{ borderWidth: 1, borderColor: "black", backgroundColor: "#e1e1e1" }}
-          value={displayTotalValue.toFixed(2)}
-          validateUserInput={false}
-          values={userInputValues}
-        />
-        <CustomUserInput
-          label="Expected"
+          key={index}
+          label={label}
           onBlur={handleUserInputValues}
-          validateUserInput={false}
-          style={{ borderWidth: 1, backgroundColor: "#f1f1f1" }}
           values={userInputValues}
         />
-        <CustomUserInput
-          label="Difference"
-          allowInput={false}
-          style={{
-            borderWidth: 1.5,
-            borderColor: "#a1a1a1",
-            backgroundColor: handleDifferenceBorder(),
-          }}
-          value={userInputValues.Expected.length > 0 ? displayDifference : ""}
-          validateUserInput={false}
-          values={userInputValues}
-        />
-      </View>
-      <View style={styles.buttonsContainer}>
-        <CustomButton type="neutral" text="Clear" onPress={handleClearValues} />
-        <CustomButton type="neutral" text="Print" onPress={handlePrinter} />
-      </View>
-      <ErrorModal
-        modalVisible={showErrorModal}
-        errorMessage={errorModalMessage}
-        closeErrorModal={() => {
-          errorHandler(errorModalMessage);
-          setShowErrorModal(false);
-        }}
+      ))}
+      <CustomUserInput
+        label="Total"
+        allowInput={false}
+        style={{ borderWidth: 1, borderColor: "black", backgroundColor: "#e1e1e1" }}
+        value={displayTotalValue.toFixed(2)}
+        validateUserInput={false}
+        values={userInputValues}
       />
-      <ConfirmationModal
-        modalVisible={showConfirmationModal}
-        text="Are you sure you want to clear all values?"
-        onConfirm={clearValues}
-        onCancel={() => setShowConfirmationModal(false)}
+      <CustomUserInput
+        label="Expected"
+        onBlur={handleUserInputValues}
+        validateUserInput={false}
+        style={{ borderWidth: 1, backgroundColor: "#f1f1f1" }}
+        values={userInputValues}
+      />
+      <CustomUserInput
+        label="Difference"
+        allowInput={false}
+        style={{
+          borderWidth: 1.5,
+          borderColor: "#a1a1a1",
+          backgroundColor: handleDifferenceBorder(),
+        }}
+        value={userInputValues.Expected.length > 0 ? displayDifference : ""}
+        validateUserInput={false}
+        values={userInputValues}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "row",
-    paddingTop: 35,
-  },
   inputList: {
-    flex: 1,
-    marginLeft: 105,
-    marginRight: 0,
+    flex: 0.7,
+    marginLeft: 50,
+    paddingTop: 35,
     height: "95%",
   },
   buttonsContainer: {
